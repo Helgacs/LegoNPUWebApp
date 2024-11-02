@@ -1,4 +1,5 @@
 using LegoNPUWebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -14,6 +15,12 @@ namespace LegoNPUWebApp.Controllers
         }
 
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public IActionResult Profile()
         {
             return View();
         }

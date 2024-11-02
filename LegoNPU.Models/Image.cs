@@ -15,10 +15,17 @@ namespace LegoNPU.Models
         public Guid Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public string BlobUrl { get; set; }
+
+        [Required]
+        public string Url { get; set; }
         public DateTime UploadedAt { get; set; }
+
+        [Required]
+        [ForeignKey("User")]
         public Guid UserId { get; set; }
         public User User { get; set; }
+
+        [InverseProperty("Image")]
         public ICollection<Rating> Ratings { get; set; }
     }
 }
