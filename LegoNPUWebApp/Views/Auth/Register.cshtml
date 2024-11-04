@@ -6,13 +6,31 @@
 }
 <h2>Register</h2>
 
-<form asp-action="Register" method="post">
+<form asp-action="Register" method="post" id="registrationForm">
     <label>Username:</label>
     <input type="text" name="username" required />
     <label>Password:</label>
     <input type="password" name="password" required />
+    <label>Confirm Password:</label>
+    <input type="password" name="confirmPassword" id="confirmPassword" required />
+    <span id="passwordMatchError" style="color: red; display: none;">Passwords do not match.</span>
     <button type="submit">Register</button>
 </form>
+
+<script>
+    document.getElementById('registrationForm').addEventListener('submit', function (event) {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const errorSpan = document.getElementById('passwordMatchError');
+
+        if (password !== confirmPassword) {
+            errorSpan.style.display = 'block';
+            event.preventDefault();
+        } else {
+            errorSpan.style.display = 'none';
+        }
+    });
+</script>
 
 @Html.ValidationSummary()
 

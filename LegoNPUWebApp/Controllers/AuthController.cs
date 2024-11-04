@@ -24,8 +24,14 @@ namespace LegoNPUWebApp.Controllers
 
         // Register POST
         [HttpPost]
-        public async Task<IActionResult> Register(string username, string password)
+        public async Task<IActionResult> Register(string username, string password, string confirmPassword)
         {
+            if (password != confirmPassword)
+            {
+                ModelState.AddModelError(string.Empty, "Passwords do not match.");
+                return View();
+            }
+
             if (!await _userService.RegisterUserAsync(username, password))
             {
                 ModelState.AddModelError("", "Username already taken.");

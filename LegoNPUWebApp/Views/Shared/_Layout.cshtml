@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using System.Security.Claims
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -24,7 +28,21 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        </li>                        
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="Auth" asp-action="Login">@User.Identity.Name</a></li>
+                            <form asp-controller="Auth" asp-action="Logout" method="post">
+                                <button class="nav-link btn btn-link text-dark" type="submit">Logout</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="Auth" asp-action="Login">Login</a></li>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="Auth" asp-action="Register">Register</a></li>
+                        }
                     </ul>
                 </div>
             </div>
