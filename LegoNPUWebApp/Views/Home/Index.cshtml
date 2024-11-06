@@ -3,6 +3,51 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="upload-form">
+            <h4>Upload a New Image</h4>
+            <form asp-action="Upload" asp-controller="Image" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="imageFile">Select Image</label>
+                    <input type="file" name="imageFile" class="form-control" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea name="description" class="form-control" rows="2" placeholder="Add a description..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Upload</button>
+            </form>
+        </div>
+    }
+    <div class="image-grid" id="imageGrid">
+    </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    let page = 1;
+    const pageSize = 10;
+    let loading = false;
+
+    function loadImages() {
+        if (loading) return;
+        loading = true;
+
+        $.get(`/Image/LoadImages?page=${page}&pageSize=${pageSize}`, function (data) {
+            $("#imageGrid").append(data);
+            loading = false;
+            page++;
+        });
+    }
+
+    loadImages();
+
+    $(window).scroll(function () {
+        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+            loadImages();
+        }
+    });
+</script>
