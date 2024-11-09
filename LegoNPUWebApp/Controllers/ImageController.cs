@@ -16,6 +16,11 @@ namespace LegoNPUWebApp.Controllers
             _environment = environment;
         }
 
+        public IActionResult Index()
+        {
+            return View();
+        }
+
         [HttpGet]
         public async Task<IActionResult> LoadImages(int page = 1, int pageSize = 10)
         {
@@ -23,22 +28,18 @@ namespace LegoNPUWebApp.Controllers
             return PartialView("_ImageListPartial", images);
         }
 
-        public IActionResult Upload()
-        {
-            return View();
-        }
-
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Upload(IFormFile file, string description)
+        public async Task<IActionResult> Upload(IFormFile imageFile, string description)
         {
-            if (file != null && file.Length > 0)
+            if (imageFile != null && imageFile.Length > 0)
             {
-                var imageUrl = await SaveFileToStorage(file);
+                var imageUrl = await SaveFileToStorage(imageFile);
 
                 await _imageService.AddImageAsync(imageUrl, description, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)));
+
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Home");
         }
 
         private async Task<string> SaveFileToStorage(IFormFile file)

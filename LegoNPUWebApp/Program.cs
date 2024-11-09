@@ -1,7 +1,6 @@
 using LegoNPU.Data;
 using LegoNPUWebApp.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +15,7 @@ builder.Services.AddDbContext<AppDBContext>(options =>
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ImageService>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
