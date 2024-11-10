@@ -30,16 +30,28 @@ namespace LegoNPUWebApp.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Upload(IFormFile imageFile, string description)
+        public async Task<IActionResult> Upload(IFormFile imageFile, string description, string title)
         {
-            if (imageFile != null && imageFile.Length > 0)
+            try
             {
-                var imageUrl = await SaveFileToStorage(imageFile);
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    var imageUrl = await SaveFileToStorage(imageFile);
 
-                await _imageService.AddImageAsync(imageUrl, description, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)));
+                    await _imageService.AddImageAsync(imageUrl, description, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)), title);
 
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Invalid input" });
+                }
+                return Json(new { success = true });
             }
-            return RedirectToAction("Index", "Home");
+            catch (Exception ex) 
+            {
+                return Json(new { success = false, message = "An error occurred while uploading the image." });
+            }
+            
         }
 
         private async Task<string> SaveFileToStorage(IFormFile file)

@@ -21,6 +21,36 @@ body {
   margin-bottom: 60px;
 }
 
+.navbar {
+    background-color: #f7d10f;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nav-link:hover {
+    transform: translateY(-2px);
+    background-color: #fcf372;
+    border-radius: 10px;
+}
+
+.navbar-text {
+    margin-right: 20px;
+}
+
+.btn {
+    background-color: #f7d10f;
+}
+
+.uploadbutton {
+    background-color: #f7d10f;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.uploadbutton:hover {
+    transform: translateY(-2px);
+    background-color: #fcf372;
+    border-radius: 10px;
+}
+
 .image-card img {
     width: 100%;
     height: auto;
@@ -72,11 +102,11 @@ body {
     align-items: center;
 }
 
-    .image-wrapper img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
+.image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
 .image-details {
     padding: 15px;

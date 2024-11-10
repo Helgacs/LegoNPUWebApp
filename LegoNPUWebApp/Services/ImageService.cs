@@ -23,6 +23,14 @@ namespace LegoNPUWebApp.Services
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Image>> GetUserImagesAsync(Guid userId)
+        {
+            return await _context.Images
+                .Where(img => img.UserId == userId)
+                .OrderByDescending(img => img.UploadedAt)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Image>> SearchImagesAsync(string keyword)
         {
             return await _context.Images
@@ -47,6 +55,27 @@ namespace LegoNPUWebApp.Services
 
             _context.Images.Add(image);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> DeleteImageAsync(Guid imageId, Guid userId)
+        {
+            Image image = _context.Images
+                .FirstOrDefault(u => u.Id == imageId && u.UserId == userId);
+
+            if (image == null) 
+            {
+                return false;
+            }
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", image.Url.TrimStart('/'));
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            _context.Images.Remove(image);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task RateImageAsync(Guid imageId, int score, Guid userId)

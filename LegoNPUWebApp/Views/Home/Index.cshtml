@@ -5,21 +5,33 @@
 <div class="text-center">
     @if (User.Identity.IsAuthenticated)
     {
-        <div class="upload-form">
-            <h4>Upload a New Image</h4>
-            <form asp-action="Upload" asp-controller="Image" method="post" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="imageFile">Select Image</label>
-                    <input type="file" name="imageFile" class="form-control" required />
+        <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="uploadModalLabel">Create New Post</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="uploadForm" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="imageFile" class="form-label">Select Image</label>
+                                <input type="file" class="form-control" id="imageFile" name="imageFile" required />
+                            </div>
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Title</label>
+                                <textarea class="form-control" id="title" name="title" rows="1" required placeholder="Add Title"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="description" name="description" rows="3" required placeholder="Add description"></textarea>
+                            </div>
+                            
+                            <button type="button" class="uploadbutton btn" onclick="submitPost()">Upload</button>
+                        </form>
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea name="description" class="form-control" rows="2" placeholder="Add a description..." required></textarea>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Upload</button>
-            </form>
+            </div>
         </div>
     } 
     <div class="image-container">
@@ -53,4 +65,41 @@
             loadImages();
         }
     });
+
+    function submitPost() {
+        const formData = new FormData(document.getElementById('uploadForm'));
+
+        fetch('/Image/Upload', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const modalElement = document.getElementById('uploadModal');
+                    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                    modalInstance.hide();
+                    addImageToGallery(data.image);
+                } else {
+                    alert('Error uploading image: ' + data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function addImageToGallery(image) {
+        const imageContainer = document.querySelector('.image-container');
+        const newImageCard = `
+            <div class="image-card">
+                <div class="image-wrapper">
+                        <img src="${image.url}" alt="User Image" />
+                </div>
+
+                <div class="image-details">
+                    <p class="description">${image.Description}</p>
+                    <p class="uploader">Uploaded by: <strong>${image.User.Username}</strong></p>
+                </div>
+            </div>`;
+        imageContainer.insertAdjacentHTML('beforeend', newImageCard);
+    }
 </script>
