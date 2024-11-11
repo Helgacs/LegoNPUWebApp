@@ -14,6 +14,7 @@
         <div class="image-details">
             <p class="description">@image.Description</p>
             <p class="uploader">Uploaded by: <strong>@image.User.Username</strong></p>
+            <p class="uploaded-date">Uploaded on: @image.UploadedAt.ToString("dd MMM yyyy")</p>
         </div>
     </div>
 }

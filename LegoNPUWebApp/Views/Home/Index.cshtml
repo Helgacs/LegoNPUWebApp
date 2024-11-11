@@ -13,21 +13,17 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="uploadForm" method="post" enctype="multipart/form-data">
+                        <form id="uploadForm" method="post" asp-controller="Image" asp-action="Upload" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label for="imageFile" class="form-label">Select Image</label>
                                 <input type="file" class="form-control" id="imageFile" name="imageFile" required />
                             </div>
                             <div class="mb-3">
-                                <label for="title" class="form-label">Title</label>
-                                <textarea class="form-control" id="title" name="title" rows="1" required placeholder="Add Title"></textarea>
-                            </div>
-                            <div class="mb-3">
                                 <label for="description" class="form-label">Description</label>
                                 <textarea class="form-control" id="description" name="description" rows="3" required placeholder="Add description"></textarea>
                             </div>
-                            
-                            <button type="button" class="uploadbutton btn" onclick="submitPost()">Upload</button>
+
+                            <button type="submit" class="uploadbutton btn">Upload</button>
                         </form>
                     </div>
                 </div>
@@ -36,70 +32,9 @@
     } 
     <div class="image-container">
         <div class="image-grid" id="imageGrid">
-            <form asp-action="LoadImages" asp-controller="Image" method="post" enctype="multipart/form-data"></form>
         </div>
     </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    let page = 1;
-    const pageSize = 10;
-    let loading = false;
-
-    function loadImages() {
-        if (loading) return;
-        loading = true;
-
-        $.get(`/Image/LoadImages?page=${page}&pageSize=${pageSize}`, function (data) {
-            $("#imageGrid").append(data);
-            loading = false;
-            page++;
-        });
-    }
-
-    loadImages();
-
-    $(window).scroll(function () {
-        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
-            loadImages();
-        }
-    });
-
-    function submitPost() {
-        const formData = new FormData(document.getElementById('uploadForm'));
-
-        fetch('/Image/Upload', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const modalElement = document.getElementById('uploadModal');
-                    const modalInstance = bootstrap.Modal.getInstance(modalElement);
-                    modalInstance.hide();
-                    addImageToGallery(data.image);
-                } else {
-                    alert('Error uploading image: ' + data.message);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-    }
-
-    function addImageToGallery(image) {
-        const imageContainer = document.querySelector('.image-container');
-        const newImageCard = `
-            <div class="image-card">
-                <div class="image-wrapper">
-                        <img src="${image.url}" alt="User Image" />
-                </div>
-
-                <div class="image-details">
-                    <p class="description">${image.Description}</p>
-                    <p class="uploader">Uploaded by: <strong>${image.User.Username}</strong></p>
-                </div>
-            </div>`;
-        imageContainer.insertAdjacentHTML('beforeend', newImageCard);
-    }
-</script>
+<script src="~/js/site.js"></script>

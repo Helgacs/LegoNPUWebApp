@@ -1,5 +1,7 @@
-﻿using LegoNPUWebApp.Services;
+﻿using LegoNPU.Models;
+using LegoNPUWebApp.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -28,9 +30,17 @@ namespace LegoNPUWebApp.Controllers
             return PartialView("_ImageListPartial", images);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> LoadUserImages(int page = 1, int pageSize = 10)
+        {
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var images = await _imageService.GetUserImagesAsync(userId, page, pageSize);
+            return View("UserImage", images);
+        }
+
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Upload(IFormFile imageFile, string description, string title)
+        public async Task<IActionResult> Upload(IFormFile imageFile, string description)
         {
             try
             {
@@ -38,20 +48,34 @@ namespace LegoNPUWebApp.Controllers
                 {
                     var imageUrl = await SaveFileToStorage(imageFile);
 
-                    await _imageService.AddImageAsync(imageUrl, description, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)), title);
+                    await _imageService.AddImageAsync(imageUrl, description, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)));
 
                 }
                 else
                 {
-                    return Json(new { success = false, message = "Invalid input" });
+                    ModelState.AddModelError("", "Invalid input.");
+                    return View();
                 }
-                return Json(new { success = true });
+                return RedirectToAction("Index", "Home");
             }
             catch (Exception ex) 
             {
-                return Json(new { success = false, message = "An error occurred while uploading the image." });
+                ModelState.AddModelError("", "An error occurred while uploading the image.");
+                return View();
             }
             
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteImage(Guid imageId)
+        {
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var success = await _imageService.DeleteImageAsync(imageId, userId);
+            if (success)
+            {
+                return RedirectToAction("LoadUserImages");
+            }
+            return RedirectToAction("LoadUserImages");
         }
 
         private async Task<string> SaveFileToStorage(IFormFile file)

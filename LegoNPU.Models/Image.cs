@@ -13,7 +13,6 @@ namespace LegoNPU.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        public string Title { get; set; }
         public string Description { get; set; }
 
         [Required]

@@ -1,0 +1,42 @@
+﻿@using LegoNPU.Models
+@{
+    ViewData["Title"] = "User Image";
+}
+
+@model IEnumerable<Image>
+
+<div class="text-center">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="d-flex flex-wrap justify-content-center user-image-container">
+            <div class="user-image-grid" id="userImageGrid">
+                @if (Model.Count<Image>() > 0)
+                {
+                    @foreach (var image in Model)
+                    {
+                        <div class="user-image-card">
+                            <div class="user-image-wrapper">
+                                <img src="@image.Url" alt="@image.Description" class="uploaded-image" />
+                            </div>
+                            <div class="image-details">
+                                <p>@image.Description</p> 
+                                <p class="uploaded-date">Uploaded on: @image.UploadedAt.ToString("dd MMM yyyy")</p>
+                                <form method="post" asp-controller="Image" asp-action="DeleteImage">
+                                    <input type="hidden" name="imageId" value="@image.Id" />
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>No images uploaded yet.</p>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/js/site.js"></script>
