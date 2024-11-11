@@ -23,6 +23,17 @@ namespace LegoNPUWebApp.Services
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Image>> GetImagesByKeywordAsync(string keyWord, int page, int pageSize)
+        {
+            return await _context.Images
+                .Where(i => i.Description.Contains(keyWord.ToLower()))
+                .Include(i => i.User)
+                .OrderByDescending(i => i.UploadedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Image>> GetUserImagesAsync(Guid userId, int page, int pageSize)
         {
             return await _context.Images
@@ -30,13 +41,6 @@ namespace LegoNPUWebApp.Services
                 .OrderByDescending(img => img.UploadedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Image>> SearchImagesAsync(string keyword)
-        {
-            return await _context.Images
-                .Where(i => i.Description.Contains(keyword))
                 .ToListAsync();
         }
 

@@ -1,0 +1,35 @@
+﻿@using LegoNPU.Models
+@{
+    ViewData["Title"] = "Search Image";
+}
+
+@model IEnumerable<Image>
+
+<div class="text-center">
+    <div class="d-flex flex-wrap justify-content-center user-image-container">
+        <div class="image-grid" id="searchImageGrid">
+            @if (Model.Count<Image>() > 0)
+            {
+                @foreach (var image in Model)
+                {
+                    <div class="image-card">
+                        <div class="image-wrapper">
+                            <img src="@image.Url" alt="@image.Description" class="uploaded-image" />
+                        </div>
+                        <div class="image-details">
+                            <p>@image.Description</p> 
+                            <p class="uploaded-date">Uploaded on: @image.UploadedAt.ToString("dd MMM yyyy")</p>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p>No image found.</p>
+            }
+        </div>
+    </div>    
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/js/site.js"></script>

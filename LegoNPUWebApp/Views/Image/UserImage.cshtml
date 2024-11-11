@@ -9,13 +9,13 @@
     @if (User.Identity.IsAuthenticated)
     {
         <div class="d-flex flex-wrap justify-content-center user-image-container">
-            <div class="user-image-grid" id="userImageGrid">
+            <div class="image-grid" id="userImageGrid">
                 @if (Model.Count<Image>() > 0)
                 {
                     @foreach (var image in Model)
                     {
-                        <div class="user-image-card">
-                            <div class="user-image-wrapper">
+                        <div class="image-card">
+                            <div class="image-wrapper">
                                 <img src="@image.Url" alt="@image.Description" class="uploaded-image" />
                             </div>
                             <div class="image-details">

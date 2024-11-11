@@ -31,6 +31,13 @@ namespace LegoNPUWebApp.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> LoadImagesByKeyword(string keyWord, int page = 1, int pageSize = 10)
+        {
+            var images = await _imageService.GetImagesByKeywordAsync(keyWord, page, pageSize);
+            return View("SearchImage", images);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> LoadUserImages(int page = 1, int pageSize = 10)
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
